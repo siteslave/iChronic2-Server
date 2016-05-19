@@ -17,6 +17,7 @@ let DrugOpd = require('../models/drug_opd');
 let ChargeOpd = require('../models/charge_opd');
 let ChargeIpd = require('../models/charge_ipd');
 let DrugIpd = require('../models/drug_ipd');
+let Allergy = require('../models/drugallergy');
 
 let ProcedureIpd = require('../models/procedure_ipd');
 
@@ -183,14 +184,14 @@ router.post('/services/info', (req, res, next) => {
   let hospcode = req.body.hospcode;
   let pid = req.body.pid;
   let seq = req.body.seq;
-  
+
   if (!hospcode || !pid || !seq) {
     res.send({ok: false, msg: 'Incorrect parameters'})
   } else {
     Services.getServiceInfo(db, hospcode, pid, seq)
       .then(rows => res.send({ok: true, rows: rows}), err => res.send({ok: false, msg: err}));
   }
-  
+
 });
 
 router.post('/services/diagnosis_opd', (req, res, next) => {
@@ -199,14 +200,14 @@ router.post('/services/diagnosis_opd', (req, res, next) => {
   let hospcode = req.body.hospcode;
   let pid = req.body.pid;
   let seq = req.body.seq;
-  
+
   if (!hospcode || !pid || !seq) {
     res.send({ok: false, msg: 'Incorrect parameters'})
   } else {
     DiagnosisOpd.getDiag(db, hospcode, pid, seq)
       .then(rows => res.send({ok: true, rows: rows}), err => res.send({ok: false, msg: err}));
   }
-  
+
 });
 
 
@@ -216,14 +217,14 @@ router.post('/services/procedure_opd', (req, res, next) => {
   let hospcode = req.body.hospcode;
   let pid = req.body.pid;
   let seq = req.body.seq;
-  
+
   if (!hospcode || !pid || !seq) {
     res.send({ok: false, msg: 'Incorrect parameters'})
   } else {
     ProcedureOpd.getProcedure(db, hospcode, pid, seq)
       .then(rows => res.send({ok: true, rows: rows}), err => res.send({ok: false, msg: err}));
   }
-  
+
 });
 
 router.post('/services/drug_opd', (req, res, next) => {
@@ -232,14 +233,14 @@ router.post('/services/drug_opd', (req, res, next) => {
   let hospcode = req.body.hospcode;
   let pid = req.body.pid;
   let seq = req.body.seq;
-  
+
   if (!hospcode || !pid || !seq) {
     res.send({ok: false, msg: 'Incorrect parameters'})
   } else {
     DrugOpd.getDrug(db, hospcode, pid, seq)
       .then(rows => res.send({ok: true, rows: rows}), err => res.send({ok: false, msg: err}));
   }
-  
+
 });
 
 router.post('/services/charge_opd', (req, res, next) => {
@@ -323,6 +324,23 @@ router.post('/services/diagnosis_ipd', (req, res, next) => {
 });
 
 
+// Drugallergy
+router.post('/allergy', (req, res, next) => {
 
+  let db = req.db;
+  let cid = req.body.cid;
+  // Get hpid
+  Person.getHpid(db, cid)
+    .then(rows => {
+      let hpid = [];
+      rows.forEach(v => {
+        hpid.push(v.hpid);
+      });
+
+      return Allergy.getAllergy(db, hpid);
+    })
+    .then(rows => res.send({ok: true, rows: rows}), err => res.send({ok: false, msg: err}));
+
+});
 
 module.exports = router;
