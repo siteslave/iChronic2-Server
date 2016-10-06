@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 
 var express = require('express');
 var path = require('path');
@@ -29,11 +30,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 let db = require('knex')({
   client: 'mysql',
   connection: {
-    host: 'localhost',
-    port: 3306,
-    user: 'hdc',
-    password: 'hdc',
-    database: 'hdc'
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD
   }
 });
 
